@@ -35,7 +35,7 @@ Widget backButton(BuildContext context) {
   return Builder(builder: (BuildContext context) {
     return IconButton(
         onPressed: () => {Navigator.pop(context)},
-        icon: Icon(Icons.arrow_back));
+        icon: Icon(Icons.arrow_back_ios));
   });
 }
 
@@ -49,30 +49,45 @@ Widget newEntryForm(BuildContext context, GlobalKey<FormState> formKey) {
             SizedBox(
               height: 10,
             ),
-            TextFormField(
-              decoration: InputDecoration(
-                  labelText: 'Title', border: OutlineInputBorder()),
-            ),
+            textField('Title'),
             SizedBox(
               height: 10,
             ),
-            TextFormField(
-              decoration: InputDecoration(
-                  labelText: 'Body', border: OutlineInputBorder()),
-            ),
+            textField('Body'),
             SizedBox(
               height: 10,
             ),
-            // DropdownRatingFormField(
-            //     maxRating: 4, validator: validator, onSaved: onSaved)
-            buttonRow(),
+            DropdownRatingFormField(
+                maxRating: 4,
+                validator: (input) {
+                  if (input == null) {
+                    return 'Please choose a rating.';
+                  }
+                  return null;
+                },
+                onSaved: (value) {}),
+            buttonRow(context, formKey),
           ],
         ),
       ));
 }
 
+// create text fields for Title and Body
+Widget textField(String title) {
+  return TextFormField(
+    validator: (input) {
+      if (input == null || input.isEmpty) {
+        return 'Please enter some text';
+      } else {
+        return null;
+      }
+    },
+    decoration: InputDecoration(labelText: title, border: OutlineInputBorder()),
+  );
+}
+
 // Row widget for Cancel and Save buttons
-Widget buttonRow() {
+Widget buttonRow(BuildContext context, GlobalKey<FormState> key) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
@@ -81,7 +96,7 @@ Widget buttonRow() {
           child: ElevatedButton(
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.grey)),
-            onPressed: () {},
+            onPressed: () => {Navigator.pop(context)},
             child: Text(
               'Cancel',
               style: TextStyle(fontSize: 18),
@@ -90,7 +105,13 @@ Widget buttonRow() {
       SizedBox(
           width: 110,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              if (key.currentState!.validate()) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('New journal entry added.')));
+                Navigator.pop(context);
+              }
+            },
             child: Text(
               'Save',
               style: TextStyle(fontSize: 18),
