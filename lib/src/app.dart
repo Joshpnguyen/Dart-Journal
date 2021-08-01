@@ -11,6 +11,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  static final routes = {
+    'entries page': (context) => JournalEntries(),
+    'add entries page': (context) => AddEntry()
+  };
+
   ThemeMode changeTheme() {
     if (darkMode) {
       return ThemeMode.dark;
@@ -30,6 +35,7 @@ class _MyAppState extends State<MyApp> {
         title: 'Journal Entries',
         changeTheme: changeTheme(),
       ),
+      routes: routes,
     );
   }
 }
@@ -74,8 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // go to Add Entry screen
   void displayAddEntry(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AddEntry()));
+    Navigator.of(context).pushNamed('add entries page');
+    // Navigator.push(
+    //     context, MaterialPageRoute(builder: (context) => AddEntry()));
   }
 
   void rebuild() {

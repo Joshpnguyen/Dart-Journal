@@ -9,7 +9,7 @@ class JournalEntries extends StatefulWidget {
 }
 
 class _JournalEntriesState extends State<JournalEntries> {
-  Journal journal = Journal();
+  Journal journal = Journal(listOfEntries: []);
 
   @override
   void initState() {
@@ -27,7 +27,16 @@ class _JournalEntriesState extends State<JournalEntries> {
     });
 
     List<Map> journalRecords = await database.rawQuery(sqlSelect);
-    print(journalRecords);
+    final journalEntries = journalRecords.map((record) {
+      return JournalEntry(
+          title: record['title'],
+          body: record['body'],
+          rating: record['rating'],
+          dateTime: record['date']);
+    }).toList();
+    setState(() {
+      journal = Journal(listOfEntries: journalEntries);
+    });
   }
 
   @override
@@ -39,6 +48,6 @@ class _JournalEntriesState extends State<JournalEntries> {
     if (journal.listOfEntries.isEmpty) {
       return SingleChildScrollView(child: Text('Work in progress!'));
     }
-    return Column();
+    return Column(children: [Text('there are journal entries')]);
   }
 }

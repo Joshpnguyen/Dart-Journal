@@ -122,14 +122,12 @@ Widget buttonRow(
           entryData.title,
           entryData.body,
           entryData.rating,
-          entryData.stringDate()
+          entryData.dateTime
         ]);
       });
 
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('New journal entry added.')));
-
-      Navigator.pop(context);
     }
   }
 
@@ -151,8 +149,9 @@ Widget buttonRow(
           width: 110,
           child: ElevatedButton(
             onPressed: () {
-              entryData.dateTime = DateTime.now();
+              entryData.dateTime = '${DateTime.now()}';
               saveButtonFunction();
+              Navigator.of(context).pop();
             },
             child: Text(
               'Save',
