@@ -1,6 +1,17 @@
 import 'package:dart_journal/src_export.dart';
 import 'package:flutter/material.dart';
 
+class JournalEntry {
+  String? title;
+  String? body;
+  DateTime? dateTime;
+  int? rating;
+
+  String toString() {
+    return 'Title: ';
+  }
+}
+
 class AddEntry extends StatefulWidget {
   const AddEntry({Key? key}) : super(key: key);
 
@@ -40,36 +51,38 @@ Widget backButton(BuildContext context) {
 }
 
 Widget newEntryForm(BuildContext context, GlobalKey<FormState> formKey) {
-  return Form(
-      key: formKey,
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            textField('Title'),
-            SizedBox(
-              height: 10,
-            ),
-            textField('Body'),
-            SizedBox(
-              height: 10,
-            ),
-            DropdownRatingFormField(
-                maxRating: 4,
-                validator: (input) {
-                  if (input == null) {
-                    return 'Please choose a rating.';
-                  }
-                  return null;
-                },
-                onSaved: (value) {}),
-            buttonRow(context, formKey),
-          ],
-        ),
-      ));
+  return SingleChildScrollView(
+    child: Form(
+        key: formKey,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              textField('Title'),
+              SizedBox(
+                height: 10,
+              ),
+              textField('Body'),
+              SizedBox(
+                height: 10,
+              ),
+              DropdownRatingFormField(
+                  maxRating: 4,
+                  validator: (input) {
+                    if (input == null) {
+                      return 'Please choose a rating.';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {}),
+              buttonRow(context, formKey),
+            ],
+          ),
+        )),
+  );
 }
 
 // create text fields for Title and Body
@@ -88,6 +101,28 @@ Widget textField(String title) {
 
 // Row widget for Cancel and Save buttons
 Widget buttonRow(BuildContext context, GlobalKey<FormState> key) {
+  final journalEntryData = JournalEntry();
+
+  // actions taken on Save button press
+  void saveButtonFunction() async {
+    if (key.currentState!.validate()) {
+      key.currentState!.save();
+      String sqlCode = await rootBundle.loadString(
+          SQL_DATABASE_CREATION); // load SQL database creation code in a string
+
+      // create database
+      final Database database = await openDatabase('journal.db', version: 1,
+          onCreate: (Database db, int version) async {
+        await db.execute(sqlCode);
+      });
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('New journal entry added.')));
+
+      Navigator.pop(context);
+    }
+  }
+
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
@@ -106,11 +141,7 @@ Widget buttonRow(BuildContext context, GlobalKey<FormState> key) {
           width: 110,
           child: ElevatedButton(
             onPressed: () {
-              if (key.currentState!.validate()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('New journal entry added.')));
-                Navigator.pop(context);
-              }
+              saveButtonFunction();
             },
             child: Text(
               'Save',

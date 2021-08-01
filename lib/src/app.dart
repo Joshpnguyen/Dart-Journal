@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dart_journal/src_export.dart';
 
 bool darkMode = false; // false = light mode, true = dark mode
+final ValueNotifier<bool> _darkMode = ValueNotifier<bool>(darkMode);
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
@@ -22,8 +23,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       darkTheme: ThemeData.dark(),
-      // themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
-      themeMode: changeTheme(),
+      themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
