@@ -11,42 +11,41 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  ThemeMode changeTheme() {
+    if (darkMode) {
+      return ThemeMode.dark;
+    }
+    return ThemeMode.light;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       darkTheme: ThemeData.dark(),
-      themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+      // themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+      themeMode: changeTheme(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Journal Entries'),
+      home: MyHomePage(
+        title: 'Journal Entries',
+        changeTheme: changeTheme(),
+      ),
     );
-  }
-
-  void changeTheme() {
-    setState(() {});
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
+  MyHomePage({Key? key, required this.title, required this.changeTheme})
+      : super(key: key);
   final String title;
+  final ThemeMode changeTheme;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,26 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      endDrawer: drawer(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
+      endDrawer: EndDrawer(),
+      body: Center(child: Text('Work in progress')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           displayAddEntry(context);
         },
-        tooltip: 'Increment',
+        tooltip: 'New jounral entry',
         child: Icon(Icons.add),
       ),
     );
@@ -91,5 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void displayAddEntry(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => AddEntry()));
+  }
+
+  void rebuild() {
+    setState(() {});
   }
 }

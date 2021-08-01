@@ -26,7 +26,7 @@ class _AddEntryState extends State<AddEntry> {
                     ))
           ],
         ),
-        endDrawer: drawer(),
+        endDrawer: EndDrawer(),
         body: newEntryForm(context, _formKey));
   }
 }
