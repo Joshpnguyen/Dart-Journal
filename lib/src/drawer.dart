@@ -29,16 +29,15 @@ class DarkModeSwitch extends StatefulWidget {
 }
 
 class _DarkModeSwitchState extends State<DarkModeSwitch> {
-  bool lightMode = false;
-
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(
         title: Text('Dark Mode'),
-        value: lightMode,
+        value: darkMode,
         onChanged: (bool value) {
           setState(() {
-            lightMode = value;
+            print('$value');
+            darkMode = value;
           });
         });
   }

@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:dart_journal/src_export.dart';
 
-class MyApp extends StatelessWidget {
+bool darkMode = false; // false = light mode, true = dark mode
+
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      themeMode: ThemeMode.system,
+      darkTheme: ThemeData.dark(),
+      themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Journal Entries'),
     );
+  }
+
+  void changeTheme() {
+    setState(() {});
   }
 }
 
@@ -38,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(widget.title),
         actions: [
           Builder(
@@ -64,10 +78,18 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          displayAddEntry(context);
+        },
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  // go to Add Entry screen
+  void displayAddEntry(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddEntry()));
   }
 }
