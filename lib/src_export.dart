@@ -9,3 +9,4 @@ export 'src/app.dart';
 export 'src/dropdown_rating_form_field.dart';
 
 const SQL_DATABASE_CREATION = 'assets/schema_1.sql.txt';
+const SQL_INSERT = 'assets/database_insert.sql.txt';

@@ -8,7 +8,11 @@ class JournalEntry {
   int? rating;
 
   String toString() {
-    return 'Title: ';
+    return 'Title: $title, Body: $body, Rating: $rating, Date: $dateTime';
+  }
+
+  String stringDate() {
+    return '$dateTime';
   }
 }
 
@@ -21,6 +25,7 @@ class AddEntry extends StatefulWidget {
 
 class _AddEntryState extends State<AddEntry> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final journalEntryData = JournalEntry();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,7 @@ class _AddEntryState extends State<AddEntry> {
           ],
         ),
         endDrawer: EndDrawer(),
-        body: newEntryForm(context, _formKey));
+        body: newEntryForm(context, _formKey, journalEntryData));
   }
 }
 
@@ -50,7 +55,8 @@ Widget backButton(BuildContext context) {
   });
 }
 
-Widget newEntryForm(BuildContext context, GlobalKey<FormState> formKey) {
+Widget newEntryForm(
+    BuildContext context, GlobalKey<FormState> formKey, JournalEntry entry) {
   return SingleChildScrollView(
     child: Form(
         key: formKey,
@@ -61,11 +67,11 @@ Widget newEntryForm(BuildContext context, GlobalKey<FormState> formKey) {
               SizedBox(
                 height: 10,
               ),
-              textField('Title'),
+              textField('Title', entry),
               SizedBox(
                 height: 10,
               ),
-              textField('Body'),
+              textField('Body', entry),
               SizedBox(
                 height: 10,
               ),
@@ -77,8 +83,10 @@ Widget newEntryForm(BuildContext context, GlobalKey<FormState> formKey) {
                     }
                     return null;
                   },
-                  onSaved: (value) {}),
-              buttonRow(context, formKey),
+                  onSaved: (value) {
+                    entry.rating = value;
+                  }),
+              buttonRow(context, formKey, entry),
             ],
           ),
         )),
@@ -86,8 +94,15 @@ Widget newEntryForm(BuildContext context, GlobalKey<FormState> formKey) {
 }
 
 // create text fields for Title and Body
-Widget textField(String title) {
+Widget textField(String title, JournalEntry entry) {
   return TextFormField(
+    onSaved: (value) {
+      if (title == 'Title') {
+        entry.title = value;
+      } else {
+        entry.body = value;
+      }
+    },
     validator: (input) {
       if (input == null || input.isEmpty) {
         return 'Please enter some text';
@@ -100,20 +115,30 @@ Widget textField(String title) {
 }
 
 // Row widget for Cancel and Save buttons
-Widget buttonRow(BuildContext context, GlobalKey<FormState> key) {
-  final journalEntryData = JournalEntry();
-
+Widget buttonRow(
+    BuildContext context, GlobalKey<FormState> key, JournalEntry entryData) {
   // actions taken on Save button press
   void saveButtonFunction() async {
     if (key.currentState!.validate()) {
       key.currentState!.save();
       String sqlCode = await rootBundle.loadString(
           SQL_DATABASE_CREATION); // load SQL database creation code in a string
+      String sqlInsertCOde = await rootBundle.loadString(SQL_INSERT);
 
       // create database
       final Database database = await openDatabase('journal.db', version: 1,
           onCreate: (Database db, int version) async {
         await db.execute(sqlCode);
+      });
+
+      // insert journal data into database
+      await database.transaction((txn) async {
+        await txn.rawInsert(sqlInsertCOde, [
+          entryData.title,
+          entryData.body,
+          entryData.rating,
+          entryData.stringDate()
+        ]);
       });
 
       ScaffoldMessenger.of(context)
@@ -141,6 +166,7 @@ Widget buttonRow(BuildContext context, GlobalKey<FormState> key) {
           width: 110,
           child: ElevatedButton(
             onPressed: () {
+              entryData.dateTime = DateTime.now();
               saveButtonFunction();
             },
             child: Text(
