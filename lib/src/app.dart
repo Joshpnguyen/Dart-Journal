@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:dart_journal/src_export.dart';
 
 bool darkMode = false; // false = light mode, true = dark mode
-final ValueNotifier<bool> _darkMode = ValueNotifier<bool>(darkMode);
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
@@ -62,12 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       endDrawer: EndDrawer(),
-      body: Center(child: Text('Work in progress')),
+      body: JournalEntries(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           displayAddEntry(context);
         },
-        tooltip: 'New jounral entry',
+        tooltip: 'New journal entry',
         child: Icon(Icons.add),
       ),
     );

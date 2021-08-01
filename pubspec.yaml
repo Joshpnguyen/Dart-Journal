@@ -28,3 +28,4 @@ flutter:
   assets:
     - assets/schema_1.sql.txt
     - assets/database_insert.sql.txt
+    - assets/database_select.sql.txt

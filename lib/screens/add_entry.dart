@@ -1,21 +1,6 @@
 import 'package:dart_journal/src_export.dart';
 import 'package:flutter/material.dart';
 
-class JournalEntry {
-  String? title;
-  String? body;
-  DateTime? dateTime;
-  int? rating;
-
-  String toString() {
-    return 'Title: $title, Body: $body, Rating: $rating, Date: $dateTime';
-  }
-
-  String stringDate() {
-    return '$dateTime';
-  }
-}
-
 class AddEntry extends StatefulWidget {
   const AddEntry({Key? key}) : super(key: key);
 
@@ -125,7 +110,7 @@ Widget buttonRow(
           SQL_DATABASE_CREATION); // load SQL database creation code in a string
       String sqlInsertCOde = await rootBundle.loadString(SQL_INSERT);
 
-      // create database
+      // create/open database
       final Database database = await openDatabase('journal.db', version: 1,
           onCreate: (Database db, int version) async {
         await db.execute(sqlCode);

@@ -14,8 +14,6 @@ class MyWelcomeHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyWelcomeHomePage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
