@@ -16,11 +16,17 @@ class _MyAppState extends State<MyApp> {
     'add entries page': (context) => AddEntry()
   };
 
-  ThemeMode changeTheme() {
-    if (darkMode) {
-      return ThemeMode.dark;
-    }
-    return ThemeMode.light;
+  void initState() {
+    super.initState();
+    initTheme();
+  }
+
+  void initTheme() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      darkMode = prefs.getBool('darkMode') ?? false;
+    });
   }
 
   @override
@@ -31,20 +37,18 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(
-        title: 'Journal Entries',
-        changeTheme: changeTheme(),
-      ),
+      home: MyHomePage(title: 'Journal Entries'),
       routes: routes,
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title, required this.changeTheme})
-      : super(key: key);
+  MyHomePage({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
   final String title;
-  final ThemeMode changeTheme;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
