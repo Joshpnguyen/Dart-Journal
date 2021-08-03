@@ -12,6 +12,10 @@ class _AddEntryState extends State<AddEntry> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final journalEntryData = JournalEntry();
 
+  void changeTheme() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,6 +129,8 @@ Widget buttonRow(
           entryData.dateTime
         ]);
       });
+
+      print(entryData);
 
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('New journal entry added.')));

@@ -11,6 +11,14 @@ class JournalEntries extends StatefulWidget {
 class _JournalEntriesState extends State<JournalEntries> {
   Journal journal = Journal(listOfEntries: []);
 
+  final fakeEntries = List<Map>.generate(15, (index) {
+    return {
+      'title': 'Journal Entry $index',
+      'date': 'Friday, January, $index, 2021',
+      'text': 'Blah blah blah test test test'
+    };
+  });
+
   @override
   void initState() {
     super.initState();
@@ -44,10 +52,18 @@ class _JournalEntriesState extends State<JournalEntries> {
     return isDatabaseEmpty(context);
   }
 
+  // Choose to show welcome screen or journal entries
   Widget isDatabaseEmpty(BuildContext context) {
     if (journal.listOfEntries.isEmpty) {
-      return SingleChildScrollView(child: Text('Work in progress!'));
+      return SingleChildScrollView(
+          child: Text('Welcome screen, no entries for now'));
     }
-    return Column(children: [Text('there are journal entries')]);
+    return ListView(
+        children: fakeEntries.map((i) {
+      return ListTile(
+        title: Text('Journal Entry ${i['title']}'),
+        subtitle: Text('Journal Entry ${i['date']}'),
+      );
+    }).toList());
   }
 }

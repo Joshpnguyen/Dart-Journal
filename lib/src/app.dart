@@ -13,7 +13,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   static final routes = {
     'entries page': (context) => JournalEntries(),
-    'add entries page': (context) => AddEntry()
+    'add entries page': (context) => AddEntry(),
+    'entry page': (context) => EntryPage(),
   };
 
   void initState() {

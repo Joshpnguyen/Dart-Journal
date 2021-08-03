@@ -2,7 +2,8 @@ import 'package:dart_journal/src_export.dart';
 import 'package:flutter/material.dart';
 
 class EndDrawer extends StatefulWidget {
-  const EndDrawer({Key? key}) : super(key: key);
+  // const EndDrawer({Key? key}) : super(key: key);
+
   @override
   _EndDrawerState createState() => _EndDrawerState();
 }
